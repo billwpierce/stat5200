@@ -1,1 +1,6 @@
 library(ggplot2)
+library(tidyquant)
+library(tidyverse)
+library(dplyr)
+library(GGally)
+library(quadprog)
