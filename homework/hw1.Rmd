@@ -1,0 +1,128 @@
+---
+title: "STAT 5200: Homework 1"
+output: pdf_document
+date: "2026-09-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Q1: Basic R Questions
+
+Both scripts are provided as embedded code, using R markdown.
+
+### Script (1.2)
+
+First, steps A thru C produce C'.
+
+```{r}
+# 1.2.A
+A <- matrix(c(5, 2, 2, 1), nrow=2)
+B <- matrix(c(5, 2, 2, 5), nrow=2)
+# 1.2.B
+C <- solve(A) %*% B
+# 1.2.C
+print(t(C))
+```
+
+Lastly, D: the difference between `A %*% B` and `A * B` is that the former operation performs matrix multiplication, whereas the latter outputs a matrix where the entry `(A * B)[i,j] = A[i,j] * B[i,j]`.
+
+### Script (1.3)
+
+```{r}
+X <- matrix(0,2,2)
+for(k in 1:100){
+  D_k <- matrix(c(k, k*k, k+1, k/2), nrow=2)
+  X <- X + D_k
+}
+print(X)
+```
+
+## Q2: Simulation Question
+
+```{r}
+rm(list = ls()); # refresh memory
+
+my_random_seed = 1; # seed for the random number generator
+set.seed(my_random_seed); # setting the seed of the random number generator
+
+generate_data = function(N = 20, og=TRUE){
+  # model parameters
+  beta0 = 1;
+  beta1 = 1;
+  beta2 = 0.2;
+  # simulating data
+  mat_data = matrix(NA, N, 2); # N by 2 matrix to store (y,x) by row
+  for (i in 1:N){
+    if(og){
+      e = rt(1, df=10); # e ~ t distribution with degrees of freedom 10
+    }else{
+      e = rchisq(1, df=20) - 20
+    }
+    x = rnorm(1, mean=1, sd = sqrt(4)); # x~N(1,4)
+    y = beta0 + beta1*x + beta2*x^2 + e; # this is our population model
+    mat_data[i,] = c(y,x);
+  }
+  colnames(mat_data) = c("y", "x"); # put column names
+  return(mat_data);
+}
+
+simulation_sample_mean = function(N=20, M=1000, og=TRUE){
+  # A function that generates M data sets (length of N), computes sample mean of each data set
+  # N: the length of each data set
+  # M: the number of simulations (that is, the number of data sets)
+  mat_theta_hat = matrix(NA, M, 1); # a placeholder to collect M sample means
+  for (m in 1:M){
+    dataset = generate_data(N, og=og); # generate a data set (y,x) of length N
+    theta_hat = mean(dataset[,1]); # compute sample mean of y
+    mat_theta_hat[m,] = theta_hat; # store m-th sample mean
+  }
+  return(mat_theta_hat);
+}
+
+M = 1000; # the number of simulations (that is, the number of data sets)
+print("Original sampling ...")
+og_mat_theta_hat_500 = simulation_sample_mean(N=500, M)
+print(var(og_mat_theta_hat_500)); # print out variance of sample means
+print(var(sqrt(500)*og_mat_theta_hat_500)); # print out variance of sample means
+
+print("Re-performed analysis with a different population model...")
+mat_theta_hat_20 = simulation_sample_mean(N=20, M, og=FALSE);
+mat_theta_hat_100 = simulation_sample_mean(N=100, M, og=FALSE);
+mat_theta_hat_500 = simulation_sample_mean(N=500, M, og=FALSE);
+print("Variance(s)")
+print(var(mat_theta_hat_20))
+print(var(mat_theta_hat_100))
+print(var(mat_theta_hat_500))
+print("Variance(s) multiplied by sqrt(N)")
+print(var(sqrt(20)*mat_theta_hat_20))
+print(var(sqrt(100)*mat_theta_hat_100))
+print(var(sqrt(500)*mat_theta_hat_500))
+```
+
+We arrive at largely the same conclusion(s) with the new model: the sampling uncertainty of $\sqrt{N}\hat{\theta}$ stays around 50 (actually increasing slightly) as $N$ increases. Without the $\sqrt{N}$ modifier, however, the variance(s) do increase.
+
+```{r}
+print("Comparing histograms...")
+hist(sqrt(500)*og_mat_theta_hat_500, main = "Original population model")
+hist(sqrt(500)*mat_theta_hat_500, main = "Updated population model")
+```
+
+Plotting the two histograms, while they are both normal distributions with mean \~67 (following from the CLT), the original model has a much tighter distribution, reflecting its lower variance (\~10 vs. \~50).
+
+## Q3: Paper Questions
+
+1.  Field of interest: Communications
+2.  Five journals:
+
+- New Media & Society
+- Media, Culture & Society
+- International Journal of Communication
+- Journal of Communication
+- Platforms & Society 3 & 4. Paper Citation: Umansky, N. (2024). Who gets a say in this? Speaking security on social media. New Media & Society, 26(7), 4118-4142. <https://doi.org/10.1177/14614448221111009>
+
+5.  Main Research Question: This paper is interested in the process of securitization, "through which an issue becomes a matter of insecurity" (e.g. "how did Iraq become a target of American fears after 9/11?"). Acknowledging the field's historical focus on top-down securitization—that is, media messaging from elites—this study instead looks to understand how securitization's dynamics are changed by social media; specifically, how the dynamics might, in fact, end up reversed. They do this through an analysis of 10 million Twitter messages about the Amazon rainforest fires in 2019.
+6.  Econometric method: (1) semi-supervised machine learning, (2) vector autoregression
+7.  They don't report standard errors (though they do report confidence intervals and p-values, so the absence is somewhat notable).
+8.  Standard errors are a measure of the variance of a distribution's sampling distribution; it's often used to refer to the standard deviation of the mean of a sample of some size n. Since this is seldom known, it's often approximated based on the standard deviation of the sample, divided by $\sqrt{n}$.

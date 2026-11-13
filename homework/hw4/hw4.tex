@@ -1,0 +1,167 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\usepackage{hyperref}
+
+\title{STAT 5200, Homework 4}
+\author{Billy Pierce}
+\date{October 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Replication and Project}
+
+For my topic of interest, I want to replicate and extend work within my Ph.D. subfield: the critical political economy of digital spaces. While my specific research is in the analysis of digital platform alternatives (e.g. Bluesky and Mastodon), the need to replicate existing data led me to the TOSCO project. TOSCO stands for the `Telecommunications Ownership and Control' database. Developed by Freyburg et al. (2022), the database details the ownership of ISPs across Africa, starting in 2003. While not specifically related to my research, this database touches on issues of infrastructure ownership and democratic outcomes.
+
+For the replication project, I'm going to focus on Garbe et al. (2026), where they use the TOSCO database (and difference-in-differences!!) to measure the relationship between foreign direct investment in internet infrastructure by other authoritarian countries, the online repression conducted by authoritarian African regimes.
+
+While I have not yet determined my exact research question (as it doesn't seem to be required for this question, if I'm reading it correctly), my intention is to look at the relationship between changes in ownership and digital rights. In particular, I'm going to compare consolidation in ownership of ISPs at the country-level to data about website censorship, to see if consolidation of internet infrastructure ownership leads to the reduction of internet access (see https://censoredplanet.org/).
+
+\subsection*{Sources}
+
+Freyburg, T., Garbe, L., \& Wavre, V. (2023). The political power of internet business: A comprehensive dataset of Telecommunications Ownership and Control (TOSCO). The Review of International Organizations, 18(3), 573–600. https://doi.org/10.1007/s11558-022-09483-z
+\\ \\
+\noindent Garbe, L., Maerz, S. F., \& Freyburg, T. (2026). Authoritarian collaboration and repression in the digital age: balancing foreign direct investment and control in internet infrastructure. Democratization, 33(1), 85–108. https://doi.org/10.1080/13510347.2024.2442377
+
+\section{Paper Question: Difference-in-Difference}
+
+\subsection*{2. Paper Citation}
+
+Christensen, D., \& Garfias, F. (2018). Can You Hear Me Now? How Communication Technology Affects Protest and Repression. Quarterly journal of political science, 13(1), 89–117. https://doi.org/10.1561/100.00016129
+
+\subsection*{3. Main Research Question}
+
+This study uses a difference-in-differences analysis of increased cell phone coverage from 2007-2014 to understand the extent to which cell phones affect protests and repression of protests. They suggest/investigate two mechanisms of this relationship: (1) that cell phones decrease coordination costs, getting more folks out to protests, and that (2) increased cell phone access makes governments less likely to crack down on protests, out of fear of coverage of their repression. 
+
+\subsection*{4. DID Model}
+
+This paper uses the following difference-in-difference model: 
+$$y_{it} = \alpha_i + \beta_t + \gamma D_{it} + \zeta m_{ct} + \eta D_{it} * m_{ct}+ \delta X_{it} + \epsilon_{it}$$
+$i$ and $t$ index locality and years, respectively; $D_{it}$ indicates whether a locality has cell phone coverage in year $t$, $X_{it}$ is a matrix of time-varying covariates, $\alpha_{i}$ and $\beta_{t}$ are locality and year-specific intercepts.
+$y_{it}$ is an indicator for if area $i$ had a protest in year $t$. The treatment variable is coverage of a locality by cell-phone networks (using a telecom provider database).
+$m_{ct}$ is the proportion of people in $i$'s country $c$ that have cell phone coverage in year $t$.
+
+There are 10,551,045 observations.
+
+\subsection*{5. Event/Policy Change/Intervention}
+
+The "treatment" is getting access to cell coverage in a locality.
+
+\subsection*{6. Who belongs? Treatment vs. Control}
+
+The treatment group are those localities that gained cell phone coverage in the period 2007-2014, and the control group are those localities without cell phone coverage.
+
+They do not presume as-if random assignment, recognizing that the decision to expand coverage is likely related to other factors related to protest activity (e.g. history of conflict in a region). Even so, they attempt to address this with the inclusion of fixed-effects, addressing at least static differences between localities that do/don't receive coverage.
+
+\subsection*{7. Coefficient of interest}
+
+$\gamma$ and $\eta$ are the coefficients of interest. Hypothesis (1) suggests that $\gamma > 0$ (likelihood of protest increases by more after localities receive coverage, relative to non-covered areas), and hypothesis (2) suggests that $\eta > 0$ (localities in countries with more cellphones—and thus more visiblity—are more likely to have protests).
+
+\subsection*{8. Parallel Trends Assumption}
+
+Conveniently for us, the author's recognize exactly what would be required for the parallel trends assumption to hold: ``The parallel-trends assumption would be violated by omitted, time-varying characteristics that are correlated with cell phone coverage and affect protest incidence'' (97). I agree with this interpretation.
+
+\subsection*{9. PTA: Evidence?}
+
+They defend the parallel trends assumption in four ways: First, they show that ``increase in protest does not anticipate our treatment (Figure 2)'' (97); i.e. that pre-treatment probability of protests are roughly parallel between conditions. 
+Second, they conduct a falsification placebo test to test if early assignment of treatment reveals differences in protest prior to the extension of coverage.
+Third, country-year fixed effects are included in some models to absorb any country-year level variations. 
+Fourth, they ``include a time-varying measure of economic development, night-time luminosity, to address concerns about modernization driving both the expansion of coverage and protest'' (97).
+
+\subsection*{10. PTA: Potential Criticism}
+
+They are rather robust in their evidence for the parallel trends assumption, so it's kind of difficult to challenge it, but to offer an argument: I'm somewhat skeptical of their mechanism/the possibility of missed confound variables. For example, what about protests against the expansion of technology (like cell phones)? In those instances, protests against those technologies would occur around the introduction of cell-phones, but not because of the cell phones.
+
+Ultimately, this is a pretty terrible argument; I just think their results are robust!
+
+\section{Paper Question: Synthetic Control}
+
+\subsection*{2. Paper Citation}
+
+Krijestorac, H., Garg, R., \& Mahajan, V. (2020). Cross-Platform Spillover Effects in Consumption of Viral Content: A Quasi-Experimental Analysis Using Synthetic Controls. Information Systems Research, 31(2), 449–472.
+
+\subsection*{3. Main Research Question}
+
+This paper extends the concept of spillover (from the literature on product adoption) to online content: that is, how does posting content on one platform change its consumption on another platform? They focus specifically on the backward spillover, i.e. changes in consumption of a video on one site (the `lead` platform) following its posting on a new, alternative (`lag') platform. To accomplish this, they compare videos posted on the lag site to a synthetic control comprised of similar single-platform videos. They imagine subsequent increases in views on the lead platform are a result of word-of-mouth (WOM) effects.
+
+\subsection*{4. Treated Unit/Treatment}
+
+Treated unit is a given piece of internet content (e.g. video), the treatment is the posting of that content to a lag platform.
+
+\subsection*{5. Donor Pool}
+
+They are admirably intentional about their selection of the donor pool; past their section on Syntheic Control lasting multiple pages, they go out of their way to avoid control construction based on observable characteristics, recognizing that—in the context of YouTube videos—observable variables like `duration' and `subscribers' might not adequately predict video virality (the confounder that they're trying to account for SC).
+
+Instead, they choose three donor pool videos based on the similarity of their view counts up-and-to the point of cross-platform posting. That is, they look at the view counts of the treated video prior to cross-posting, compare it to the over-time view counts of other videos, and choose the three potential control videos with the highest cosine similarity between those two vectors.
+
+\subsection*{6. Constructing the Synthetic Control}
+
+They weigh donor units based on the following equation:
+$$w_{ijks} = \frac{d(v_s^n, v_{ij})}{\sum_{n=1}^{3} d(v_s^n, v_{ij})}$$
+where $w_{ijks}$ is the weight of video $s$ on platform $j$, in its comparison to treatment video $s$ that was later posted to $k$. $d(v_a, v_b)$ measures the cosine similarity between two videos $v_a$ and $v_b$.
+
+\subsection*{7. Main Estimated Treatment Effect}
+
+Rather than measuring the raw change in view count, they measure it in terms of view growth percentage. They measure that quantity for the treatment and synthetic control, getting the following equation for their main estimated treatment effect, `Lift':
+$$\text{Lift}_{i,j,k}(\Delta t) = \frac{Y^I_{ijk}(t_{ik} + \Delta t) / {Y^I_{ijk}(t_{ik})}^{-1}}{Y^N_{ijk}(t_{ik} + \Delta t) / {Y^N_{ijk}(t_{ik})}^{-1}}$$
+where $Y^I(t)$ and $Y^N(t)$ represent the cumultative views on day $t$ of the treatment and synthetic control videos, respectively.
+
+While they bootstrap the Lift, and it changes over time, they get a long-run estimate, all-platform for lift of around 2: this suggests that `after a video is introduced onto a new platform, its consumption on the initial platform will be approximately twice what it would have been otherwise' (462).
+
+\subsection*{8. Pre-Treatment Fit}
+
+They are fairly close! They provide both aggregate statistics (i.e. average view counts for synthetic control and treatment videos), while following up with more specific robustness checks. They find cosine similarities have a mean of .973 (which is very good, IMO), that the ratio of views achieved by control videos and treated videos at the time of treatment is .992,  and they find that the distribution of initial views are similar, not being flagged by a Kolmogorov-Smirnov test.
+
+\subsection*{9. Placebo and/or Permutation Tests}
+
+They do not perform either test.
+
+\subsection*{10. Plausible Criticism}
+
+Unfortunately, they only measure the efficacy of their pre-treatment fit based on the variable—similarity in views—they were controlling for. I wonder if there are other forms of systemic divergence: were the synthetic control and treatment videos rated (via likes/dislikes) differently? Were they on systematically different topics? etc. Without this information, it's difficult to confirm the robustness of their synthetic control.
+
+\section{Paper Question: Regression Discontinuity Design}
+
+\subsection*{2. Paper Citation}
+
+Gerber, A. (2011). The Persuasive Effects of Direct Mail: A Regression Discontinuity Based Approach. The Journal of Politics., 73(1).
+
+\subsection*{3. Main Research Question}
+
+This paper looks at the effect of receiving direct mail in the run-up to an election on vote choice and voter turnout; using a discontinuity in the mailing rule to conduct a regression discontinuity design, they find that a 10\% increase in a challenger's anti-incumbent mailer increased their vote share by 1.5-3.5\%.
+
+\subsection*{4. Describe the Main Regression Discontinuity Empirical Model}
+
+While the entire formula is too lengthy to be worth reproducing here, the outcome variable is the vote share by the democrats, the running tally is the share of voters who received mail (this is a fuzzy RDD), and they control for standard demographic variables, and there are 1731 precincts. 
+
+\subsection*{5. Determining Treatment}
+
+While it's a little complex, they essentially created a mail targeting rule by income that only applied to Democrats and Libertarians, not Republicans and Independents; this means that they can compare the effects of this mailer rule across two pairs of parties whose reactions to the mailers are suspected to be the same. They construct a mail eligibility variable that indicates whether Dems/Libertarians would receive mail ``if they lived in a census block that satisfied the income threshold'' (142); this allows them to compare districts just above and below the income threshold.
+
+\subsection*{6. Sharp vs. Fuzzy RDD}
+
+Fuzzy! Since the income level only effects the mailer for a probability of the district, an RDD-design—at the district/precinct level—is used.
+
+\subsection*{7. Coefficient of Interest}
+
+They care about the difference in votes for sending out more mailers, which is computed via $\alpha_1 + \beta_1 + \delta_1 + \phi_1$.
+
+\subsection*{8. Bandwidth}
+
+They use a bandwidth of 1.57, selected via a cross-validation procedure (using out-of-sample prediction tests), while later showing that the results are robust in around the range of 1-5.
+
+\subsection*{9. Identifying Assumption}
+
+There's no reason to suspect that the change in voting because of the mailers is significantly different for Democrats and Libertarians, when compared to Republicans and Independents.
+
+\subsection*{10. Evidence Supporting RDD Validity?}
+
+Their primary evidence supporting validity is the bandwidth robustness they showed; by confirming their results are robust from small-to-large bandwidths, they're able to confirm that the measured effects are not a result of an overly large or small income window. They also confirm that most observable variables are very similar above and below the discontinuity thresholds (see Table 3).
+
+\subsection*{11. Plausible Criticism}
+
+I'm fairly confident that there are enough differences between the beliefs of Democrats (and Libertarians) vs. Republicans (and Independents) that their reactions are not safely comparable; there's so much work to demonstrate this with, e.g. Johnston et al. "Open versus Closed: Personality, identity, and the politics of redistribution." (2017)
+
+\end{document}

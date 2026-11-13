@@ -129,8 +129,6 @@ company_metrics <- company_metrics %>%
 
 print(company_metrics)
 
-company_returns_clean <- na.omit(company_returns)
-
 # -------------------------------------------------
 ## Final Picker
 ## Based on the Sharpe ratio, we choose the following stocks to optimize 
@@ -154,6 +152,7 @@ returns_data <- tq_get(tickers,get="stock.prices",from="2005-01-01") %>%
 
 # Remove rows with missing data
 returns_data_clean <- na.omit(returns_data)
+returns_data_clean <- na.omit(company_returns %>% tidyr::pivot_wider(names_from=symbol,values_from=monthly_return))
 
 # View a correlation scatterplot matrix
 ggpairs(

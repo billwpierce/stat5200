@@ -1,0 +1,328 @@
+---
+title: "hw3"
+output:
+  pdf_document: default
+  html_document: default
+header-includes: 
+  - \usepackage{amsmath}
+  - \usepackage{mathtools}
+---
+
+## Q1 (Reflection)
+
+Incorrect responses:
+
+- I got the incorrect variance for 2.3 (even though I learned in the solutions that it wasn't required). I made this mistake by forgetting to include the covariance of the summands (namely, I didn't include $2Cov((y-\mu_y),\rho\frac{\sigma_y}{\sigma_x}(x-\mu_x))$.
+
+- I miscalculated the asymptotics for 4.3 and 4.4, as a result of misunderstanding asymptotic variance; additionally, my mistake implies a slightly incorrect method (though a correct answer) for 4.2 (namely, I should've used the CLT, rather than directly using the limit as N approaches infinity). Rather than measuring the asymptotic variance as N approaches infinity as 0—even if that is correct—the question was instead about how the variance approaches the form of $\frac{Avar(\sqrt{N}(\bar{y}_N-\mu))}{N} = \frac{\sigma^2}{N}$ as N gets larger, which would've matched $Var(\bar{y}_N)$. Similarly, taking the square root of this for 4.4—which I did correctly—would've produced $\frac{\sigma}{\sqrt{N}}$ for the asymptotic standard deviation of $\bar{y}_N$, as desired.
+
+  - Basically, I naively took the limit of the variance as it approached infinity rather than measuring the form it took for very large N.
+
+## Q2 (Review Question)
+
+### 2.1: Show that $\hat{\beta}$ is a consistent estimator.
+
+Much of this solution is derived from the slides.
+
+Plugging $y_i = x_i\beta + u_i$ into $\hat{\beta} = \left(\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\sum\limits_{i=1}^{N}x'_iy_i\right)$...
+
+$$\begin{align*}
+  \hat{\beta} &= \left(\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\sum\limits_{i=1}^{N}x'_iy_i\right) \\
+  &= \left(\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\sum\limits_{i=1}^{N}x'_i(x_i\beta + u_i)\right) \\
+  &= \left(\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\beta\sum\limits_{i=1}^{N}x'_ix_i + \sum\limits_{i=1}^{N}x'_iu_i\right) \\
+  &= \left(\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\beta\sum\limits_{i=1}^{N}x'_ix_i\right) 
+  + \left(\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\sum\limits_{i=1}^{N}x'_iu_i\right) \\
+  &= \beta + \left(\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\sum\limits_{i=1}^{N}x'_iu_i\right) \\
+  \hat{\beta} - \beta &= \left(\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\sum\limits_{i=1}^{N}x'_iu_i\right) &\text{equivalently}\\
+\end{align*}$$ Continuing to follow the notes...
+
+$$\begin{align*}
+  \frac{1}{N}\sum\limits_{i=1}^{N}x'_ix_i &\overset{p}{\to} E[x'x] &\text{by LLN}\\
+  A &:= E[x'x] \\
+  \left(\frac{1}{N}\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1} &\overset{p}{\to} A^{-1} &E[x'x]\text{ is invertible, by OLS.2} \\
+  \frac{1}{N}\sum\limits_{i=1}^{N}x'_iu_i &\overset{p}{\to} E[x'u]=0 &\text{by LLN, OLS.1} \\
+\end{align*}  $$
+
+$$\begin{align*}
+  \left(\frac{1}{N}\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1} &= N\left(\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1} &\text{property of matrix inversions} \\
+  \implies \left(\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1} &= \frac{1}{N} \left(\frac{1}{N}\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\\
+  \implies \left(\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\sum\limits_{i=1}^{N}x'_iu_i\right) &= \frac{1}{N} \left(\frac{1}{N}\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\sum\limits_{i=1}^{N}x'_iu_i\right)\\
+  &= \frac{1}{N} \left(\frac{1}{N}\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}N\left(\frac{1}{N}\sum\limits_{i=1}^{N}x'_iu_i\right)\\
+  &= \left(\frac{1}{N}\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\frac{1}{N}\sum\limits_{i=1}^{N}x'_iu_i\right) \\
+  \text {Thus,} \\
+  \left(\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\sum\limits_{i=1}^{N}x'_iu_i\right) &\overset{p}{\to} A^{-1}0 = 0\\
+  \implies \hat{\beta} &\overset{p}{\to} \beta \\
+\end{align*}$$ Thus, $\hat{\beta}$ is a consistent estimator, as desired.
+
+### 2.2: Derive the asymptotic distribution of $\hat{\beta}$.
+
+Having shown that $\left(\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\sum\limits_{i=1}^{N}x'_iu_i\right) = \left(\frac{1}{N}\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\frac{1}{N}\sum\limits_{i=1}^{N}x'_iu_i\right)$, we can follow the proof in the slides.
+
+$$\begin{align*}
+  \text{Define } B &:= E[u^2x'x] = E[(ux)'(ux)] \\
+  \implies \frac{1}{\sqrt{N}}\sum\limits_{i=1}^{N}x'_iu_i &\overset{d}{\to} N(0,B) &\text{by Lindeberg-Levy} \\
+  \text{Since asymptotic normality requires } \sqrt{N}(\hat{\beta} - \beta) &\overset{d}{\to} N(0,V) \text { for some V,} \\
+  \sqrt{N}(\hat{\beta} - \beta) &= \sqrt{N}\left(\frac{1}{N}\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\frac{1}{N}\sum\limits_{i=1}^{N}x'_iu_i\right) \\
+  &= \left(\frac{1}{N}\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1}\left(\frac{1}{\sqrt{N}}\sum\limits_{i=1}^{N}x'_iu_i\right) \\
+  \text{Since } \left(\frac{1}{N}\sum\limits_{i=1}^{N}x'_ix_i\right)^{-1} &\overset{p}{\to} A^{-1} &\text{(see 2.1 above)}\\
+  \sqrt{N}(\hat{\beta} - \beta) &\overset{d}{\to} N(0,A^{-1}BA^{-1}) &\text{By Slutsky's Theorem} \\
+\end{align*}$$
+
+### 2.3: Present a consistent estimator of the asymptotic variance of $\hat{\beta}$.
+
+Since $\sqrt{N}(\hat{\beta} - \beta) \overset{d}{\to} N(0,A^{-1}BA^{-1})$, let's denote $A^{-1}BA^{-1} =: V$. Per Notes 3, Appendix 2, we proceed to define $\hat{V}$ as an estimator of $V$: $$\begin{align*}
+  V &= A^{-1}BA^{-1} \\
+  &= (E[x'x])^{-1}E[u^2x'x](E[x'x])^{-1} \\
+  \text {Define } X' &:= (x_1', \dots,x_N'); \text{ then:} \\
+  \hat{V} &= \left(\frac{1}{N}X'X\right)^{-1} \frac{1}{N} \sum\limits_{i=1}^{N}\hat{u}_i^2x'_ix_i \left(\frac{1}{N}X'X\right)^{-1} &\text{where } \hat{u}_i := y_i-x_i\hat{\beta} \\
+  \implies \hat{V}/N &= (X'X)^{-1} \sum\limits_{i=1}^{N}\hat{u}_i^2x'_ix_i (X'X)^{-1} \\
+\end{align*}$$
+
+While I'm not sure how—or if—the notes prove that $\hat{V}/N$ is a consistent estimator, but it nevertheless is (and this problem only asks for it to be presented)! Thus, $\hat{V}/N$ is a consistent estimator of the asymptotic variance of $\hat{\beta}$ (per Wooldridge, this is used to mean that $\hat{V}$ (which is really $\hat{V}_N$, but I'm being a little loose with including implies subscripts here) consistently estimates $Avar \sqrt{N}(\hat{\beta}-\beta)$.
+
+### 2.4: What is the standard error of $\hat{\beta}$?
+
+By Wooldridge 3.10, if $\hat{V} \overset{p}{\to} V$ and we denote the jth diagonal of $V$ as $v_{jj}$, then the asymptotic standard error of $\hat{\beta}_j$ (remember, the N subscript is implied), $se(\hat{\beta}) = \sqrt{\hat{v}_{jj}/N}$.
+
+## Q3 (Data Question)
+
+### 3.1: Model Estimation
+
+```{r}
+cps85 = read.csv("CPS85.txt");
+attach(cps85);
+head(cps85)
+
+exper2 = exper^2 #squared experience to capture the potential nonlinearity
+model1 = lm(formula = logwage ~ educ + exper + exper2);
+summary(model1);
+```
+
+### 3.2: Q-Q Plot Analysis
+
+```{r}
+qqnorm(resid(model1));
+qqline(resid(model1));
+```
+
+I'm worried that my eyes are playing tricks on me, but I believe that this plot suggests normality. The data points are closely packed around the QQ line, with slight deviation only occurring past ±3 on either side; nothing, in my opinion, to worry about.
+
+### 3.3
+
+... this is just a description; I don't think there's a question here?
+
+### 3.4: Consistent Estimator
+
+Per our answer to 3.2 (that the errors are normally distributed), we can follow the method in the Notes, switching any $\beta$ with their consistent estimator counterparts:
+
+$$\begin{align*}
+  \theta &= 100[exp(\beta_1-\beta_2+(1-2exper)\beta_3) - 1] \\
+  \implies \hat{\theta} &= 100[exp(\hat{\beta_1}-\hat{\beta_2}+(1-2exper)\hat{\beta_3}) - 1] \\
+\end{align*}$$ Since OLS coefficients are consistent estimators under OLS.1 and OLS.2, and we have no reason to assume that $E[x'x]$ (which, frankly, seems pretty unlikely in real-world data), and we believe OLS.1 (per 3.2), replacing all betas with their beta-hats should produce a consistent estimator of $\theta$.
+
+### 3.5: Computing $\hat{\theta}$
+
+```{r}
+b <- coef(model1) # coefficients are 1-indexed by R; adjusted above
+for (exper in seq(0,55, by=5)){
+  theta_hat <- 100 * (exp(b[2] - b[3] + (1-2*exper)*b[4]) - 1)
+  print(paste(exper,":",theta_hat))
+}
+```
+
+As the amount of experience increases, increases to education move from \~5% (at zero years experience) to \~12% (at 55 years). This makes sense, as the more experience someone already has, the less the loss of experience reduces their wage (in some cases, it may move them back on the convex curve!). More mathematically, this is because the age at which we expect earnings to peak varies with the amount of education; regardless, increasing education, at least within the scales here, always provides *some* increase to wage.
+
+### 3.6: How would I compute standard errors?
+
+Using the delta method! This is discussed more (and examples are given) in the Notes, but the basic idea is to get the first-order Taylor approximation around the various $\hat{\beta}$, and then using the equations of the delta method to subsequently calculate the asymptotic standard error.
+
+### 3.7 (Optional)
+
+## Q4 (Monte Carlo Simulation and Coverage Rate)
+
+### 4.1: Sampling
+
+```{r}
+rm(list = ls()); # refresh memory
+
+my_random_seed = 42; # seed for the random number generator
+set.seed(my_random_seed); # setting the seed of the random number generator
+
+generate_data = function(N = 100){
+  # simulating data
+  mat_data = matrix(NA, N, 2); # N by 2 matrix to store (y,x) by row
+  for (i in 1:N){
+    u = rt(1, 7) #u~t7
+    x = rnorm(1, mean=1, sd = sqrt(4)); # x~N(1,4)
+    y = 1 + x + 0.2 * x^2 + u
+    mat_data[i,] = c(y,x);
+  }
+  colnames(mat_data) = c("y", "x"); # put column names
+  return(mat_data);
+}
+
+print("Sampling ...")
+sims_4_1 <- generate_data(N=100)
+```
+
+### 4.2
+
+```{r}
+y <- sims_4_1[,'y']
+x <- sims_4_1[,'x']
+x2 <- x^2
+model2 = lm(formula = y ~ x + x2);
+summary(model2);
+```
+
+The "estimates" in the table above are $\hat{\beta}_0$, $\hat{\beta}_1$, and $\hat{\beta}_2$, respectively.
+
+### 4.3
+
+I rely here on my answers to 2.2 **and** 2.3.
+
+```{r}
+N <- 100
+int_mat <- matrix(1, N, 1)
+X_mat <- cbind(int_mat, x,x2)
+beta_hat <- coef(model2)
+A <- (t(X_mat) %*% X_mat)/N
+A_inv <- solve(A)
+temp <- matrix(0, nrow = 3, ncol = 3)
+for(i in 1:100){
+  x_i <- X_mat[i,]
+  uh_i <- y[i] - t(X_mat[i,] %*% beta_hat)
+  temp <- temp + (uh_i[1,1] ^ 2) * (X_mat[i,] %*% t(X_mat[i,]))
+}
+B <- (temp)/N
+V <- A_inv %*% B %*% A_inv
+se_b1_hat <- sqrt(V[2,2]/N)
+print(paste("The standard error of the beta hat estimator is", round(se_b1_hat,3)))
+upper_lim <- beta_hat[2] + qnorm(.975) * se_b1_hat
+lower_lim <- beta_hat[2] - qnorm(.975) * se_b1_hat
+print(paste("The 95% confidence interval for beta hat is", round(lower_lim,3), "to", round(upper_lim,3)))
+```
+
+Since the standard error is close to the output of the model summary, I consider this reliable. Onward!
+
+### 4.4
+
+```{r}
+M <- 10000
+I_counter <- 0
+for(i in 1:M){
+  # Generate Data and Coefficients
+  sims_4_1 <- generate_data(N=100)
+  y <- sims_4_1[,'y']
+  x <- sims_4_1[,'x']
+  x2 <- x^2
+  model2 = lm(formula = y ~ x + x2);
+  summary(model2);
+  # Calculate the CI
+  N <- 100
+  int_mat <- matrix(1, N, 1)
+  X_mat <- cbind(int_mat, x,x2)
+  beta_hat <- coef(model2)
+  A <- (t(X_mat) %*% X_mat)/N
+  A_inv <- solve(A)
+  temp <- matrix(0, nrow = 3, ncol = 3)
+  for(i in 1:100){
+    x_i <- X_mat[i,]
+    uh_i <- y[i] - t(X_mat[i,] %*% beta_hat)
+    temp <- temp + (uh_i[1,1] ^ 2) * (X_mat[i,] %*% t(X_mat[i,]))
+  }
+  B <- (temp)/N
+  V <- A_inv %*% B %*% A_inv
+  se_b1_hat <- sqrt(V[2,2]/N)
+  upper_lim <- beta_hat[2] + qnorm(.975) * se_b1_hat
+  lower_lim <- beta_hat[2] - qnorm(.975) * se_b1_hat
+  if(1 >= lower_lim & 1 <= upper_lim) {
+    I_counter <- I_counter + 1
+  }
+}
+emp_cov_rate <- I_counter / M
+print(paste(I_counter,"betas were covered, for an empirical coverage rate of", round(emp_cov_rate,3)))
+```
+
+We'd expect a coverage rate of 95% (per the definition of confidence intervals), so this—while a little low—is not *terrible*. My guess is that the imperfect coverage here is due to using a t-distribution, rather than a normal distribution, for the error terms: it has slightly-larger tails, which should slightly worsen the accuracy of the estimator.
+
+### 4.5
+
+```{r}
+rm(list = ls()); # refresh memory
+
+generate_data_new = function(N = 100){
+  # simulating data
+  mat_data = matrix(NA, N, 2); # N by 2 matrix to store (y,x) by row
+  for (i in 1:N){
+    u = rt(1, 7) #u~t7
+    x = rnorm(1, mean=1, sd = sqrt(4)); # x~N(1,4)
+    y = 1 + x + 0.2 * x^2 + (abs(x)/2)*u
+    mat_data[i,] = c(y,x);
+  }
+  colnames(mat_data) = c("y", "x"); # put column names
+  return(mat_data);
+}
+M <- 10000
+I_counter <- 0
+for(i in 1:M){
+  # Generate Data and Coefficients
+  sims_4_5 <- generate_data_new(N=100)
+  y <- sims_4_5[,'y']
+  x <- sims_4_5[,'x']
+  x2 <- x^2
+  model2 = lm(formula = y ~ x + x2);
+  summary(model2);
+  # Calculate the CI
+  N <- 100
+  int_mat <- matrix(1, N, 1)
+  X_mat <- cbind(int_mat, x,x2)
+  beta_hat <- coef(model2)
+  A <- (t(X_mat) %*% X_mat)/N
+  A_inv <- solve(A)
+  temp <- matrix(0, nrow = 3, ncol = 3)
+  for(i in 1:100){
+    x_i <- X_mat[i,]
+    uh_i <- y[i] - t(X_mat[i,] %*% beta_hat)
+    temp <- temp + (uh_i[1,1] ^ 2) * (X_mat[i,] %*% t(X_mat[i,]))
+  }
+  B <- (temp)/N
+  V <- A_inv %*% B %*% A_inv
+  se_b1_hat <- sqrt(V[2,2]/N)
+  upper_lim <- beta_hat[2] + qnorm(.975) * se_b1_hat
+  lower_lim <- beta_hat[2] - qnorm(.975) * se_b1_hat
+  if(1 >= lower_lim & 1 <= upper_lim) {
+    I_counter <- I_counter + 1
+  }
+}
+emp_cov_rate <- I_counter / M
+print(paste(I_counter,"betas were covered, for an empirical coverage rate of", round(emp_cov_rate,3)))
+```
+
+a)  The empirical coverage rate is .904
+b)  This is lower than the empirical coverage rate above, by \~.2
+c)  This makes complete sense, as further distorting the error term away from normality is likely to further decrease the accuracy of our estimator.
+
+## Q5 (Paper Question)
+
+### 5.1 & 5.2
+
+Hey, I found a paper in my field for once!
+
+BECKER, A. B., & HALLER, B. A. (2014). When Political Comedy Turns Personal: Humor Types, Audience Evaluations, and Attitudes. Howard Journal of Communications, 25(1), 34–55. <https://doi.org/10.1080/10646175.2013.835607>
+
+### 5.3: Research Question
+
+This paper investigates how exposure to different types of political comedy changes opinions about the topic(s) of that comedy. More specifically, it looks at other-hostile vs self-directed comedy in the case of David Paterson and SNL: David Paterson, the short-term governor of New York, was parodied twice, in (1) the SNL sketch in which they made jokes about his blindness, or (2) when he subsequently appeared on SNL and chastised them, before making jovial fun of himself. The study's authors investigated how differential exposure to these two sketches changes observants' attitudes towards blindness, finding that self-directed comedy about Paterson's blindness improved attitudes, while the other-hostile, original comedy of SNL made attitudes worse.
+
+### 5.4
+
+For the OLS part of the paper, they look at the variables that impacted perceived favorability of Governor Paterson. Looking at model 5 (the last model presented in Table 2), y is favorability, and x is 17-dimension variable including demographics, political predispositions, treatment(s), and interaction variables of party ID and treatment. N=144.
+
+### 5.5
+
+The authors did not state any underlying assumptions necessary for OLS.
+
+### 5.6
+
+I think that their model, at least subtly, violates simultaneity: although they're attempting to predict the Governor's favorability, someone's party ID (which is one of the explanatory variables offered) may be affected by their opinion of the Governor! If, for example, you thought he was doing a good job, it might increase your opinion of the Democrats, thus violating simultaneity.
