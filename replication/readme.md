@@ -1,0 +1,3 @@
+## LLM Statement
+
+For transparency, I used Claude to generate the code for descriptive_reproduction.R. This file is solely used to collect the data across data sets, turning it into the replication_data.rds file. The code was produced through extensive conversation with Claude, and everything was checked by hand. I figured this was okay within the scope of this course's LLM usage policy, though please let me know if you'd like to discuss further. Thanks!
